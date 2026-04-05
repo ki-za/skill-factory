@@ -6,7 +6,8 @@ skill-factory/
 ├── update-docs                         # Bash wrapper to update documentation
 ├── scripts/                            # Automation scripts
 │   ├── sources.txt                     # URLs to fetch docs from
-│   └── fetch_anthropic_skill_docs.py   # Fetch latest Anthropic docs
+│   ├── fetch_anthropic_skill_docs.py   # Fetch latest Anthropic docs
+│   └── fetch_skill_creator.py          # Fetch latest skill-creator from GitHub
 ├── docs/                               # All knowledge about creating skills
 │   ├── knowledge/
 │   │   ├── anthropic-skill-docs/       # Official Anthropic skill documentation
@@ -33,6 +34,7 @@ skill-factory/
     ├── ai/                             # ai-patterns, creating-process-files
     │   └── claude-code/                # creating-hooks
     └── developer-tools/                # writing-bash-scripts, using-uv, git-worktrees
+├── workspace/                          # Eval workspaces (gitignored), mirrors output_skills/ structure
 ```
 
 ## Purpose

@@ -62,9 +62,9 @@ The grader agent will also critique weak assertions and suggest improvements, so
 
 For each test prompt, spawn two subagents in the same turn:
 
-**With-skill run**: Claude has access to the skill and executes the test prompt. Save outputs to `{skill-name}-workspace/iteration-1/eval-{ID}/with_skill/outputs/`.
+**With-skill run**: Claude has access to the skill and executes the test prompt. Save outputs to `workspace/{category}/{skill-name}/iteration-1/eval-{ID}/with_skill/outputs/`.
 
-**Baseline run**: Same prompt, no skill loaded. Save to `{skill-name}-workspace/iteration-1/eval-{ID}/without_skill/outputs/`.
+**Baseline run**: Same prompt, no skill loaded. Save to `workspace/{category}/{skill-name}/iteration-1/eval-{ID}/without_skill/outputs/`.
 
 Running both shows whether the skill actually adds value vs what Claude can do on its own.
 
@@ -90,7 +90,7 @@ For assertions that can be checked programmatically (file exists, contains expec
 
 **Aggregate**: Run the benchmark aggregation:
 ```bash
-python -m scripts.aggregate_benchmark {workspace}/iteration-1 --skill-name {name}
+python -m scripts.aggregate_benchmark workspace/{category}/{skill-name}/iteration-1 --skill-name {name}
 ```
 (Run from the `docs/knowledge/anthropic-skill-creator/` directory.)
 
@@ -101,9 +101,9 @@ This produces `benchmark.json` with pass_rate, time, and tokens for each configu
 **Launch the viewer**:
 ```bash
 python docs/knowledge/anthropic-skill-creator/eval-viewer/generate_review.py \
-  {workspace}/iteration-1 \
+  workspace/{category}/{skill-name}/iteration-1 \
   --skill-name "{name}" \
-  --benchmark {workspace}/iteration-1/benchmark.json
+  --benchmark workspace/{category}/{skill-name}/iteration-1/benchmark.json
 ```
 
 The viewer has two tabs:
@@ -173,4 +173,4 @@ skill-name/
   ...
 ```
 
-Workspace directories (`{skill-name}-workspace/`) are working artifacts — they can be deleted after iteration is complete.
+Workspace directories live in `workspace/` at the repo root, mirroring the `output_skills/` category structure (e.g., `workspace/testing/tdd/`). They are gitignored and can be deleted after iteration is complete.
