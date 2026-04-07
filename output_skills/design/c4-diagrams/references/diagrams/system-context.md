@@ -30,11 +30,25 @@ Everyone — technical and non-technical. This is the diagram you show stakehold
 - Infrastructure details
 - Implementation technology of the system itself (save that for Container level)
 
+## Relationship Labels
+
+The label should describe what the relationship *does*, in business language. Avoid generic verbs and avoid leaking technical/protocol details into system context (those belong at container level).
+
+Bad → Good:
+- `"Uses"` → `"Manages appointments in"`
+- `"Calls API"` → `"Fetches customer records from"`
+- `"HTTP/JSON"` → `"Sends order confirmations via"`
+- `"Reads and writes"` → `"Stores transaction history in"`
+- `"Connects to"` → `"Authenticates users against"`
+
+A good label reads like a sentence: "Customer **places orders in** Online Store." A bad label reads like a wire protocol.
+
 ## Common Mistakes
 
 - Showing too many external systems — include only direct dependencies, not transitive ones
 - Using a single "User" when there are meaningfully different roles (admin vs customer vs support agent)
 - Forgetting to show systems that depend ON yours, not just systems yours depends on
 - Labeling relationships as just "Uses" instead of describing the actual interaction
+- Including protocol/technology in system context labels (HTTP, JSON, JDBC) — those belong on container diagrams
 
 Source: https://c4model.com/diagrams/system-context

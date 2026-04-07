@@ -42,11 +42,25 @@ NOT Docker containers (though a Docker container might host a C4 container).
 - Internal structure of containers (components, classes) — that's the next zoom level
 - Replication or failover details
 
+## Relationship Labels
+
+At the container level, labels should describe **what flows** AND **how it flows**. Both the business intent and the protocol/technology matter.
+
+Bad → Good:
+- `"Uses"` → `"Reads order data from [JDBC]"`
+- `"HTTPS"` → `"Submits new orders to [JSON/HTTPS]"`
+- `"Calls"` → `"Validates payment via [REST/HTTPS]"`
+- `"gRPC"` → `"Streams location updates to [gRPC]"`
+- `"Reads/writes"` → `"Persists user sessions to [Redis protocol]"`
+
+Format: `"<verb phrase describing what flows> [<protocol>]"`. The verb phrase belongs in the label; the protocol can be in brackets, parentheses, or on its own line — pick one and stay consistent.
+
 ## Common Mistakes
 
 - Showing deployment nodes (servers, Kubernetes pods) — this is logical architecture, not physical
 - Missing technology labels on containers ("Database" is not enough; say "PostgreSQL 15")
 - Missing protocol labels on inter-container relationships
+- Protocol-only labels — `"HTTPS"` alone tells the reader nothing about what's being communicated
 - Making it too big — if you have 20+ containers, split into focused views by domain or user journey
 - Confusing containers with components — if it's not separately deployable, it's probably a component
 

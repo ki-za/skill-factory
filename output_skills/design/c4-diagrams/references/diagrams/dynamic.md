@@ -37,6 +37,20 @@ Both convey the same information. Collaboration style works better in ASCII and 
 - Every possible error path (focus on the primary flow, note exceptions separately)
 - Implementation details below the chosen abstraction level
 
+## Numbered Interaction Labels
+
+Each interaction gets a number prefix and a verb-led description of what happens at that step.
+
+Format: `<N>. <verb phrase>`
+
+Bad → Good:
+- `"1. Login"` → `"1. Submits credentials"`
+- `"2. Check"` → `"2. Validates against user store"`
+- `"3. Token"` → `"3. Returns session token"`
+- `"4. Call"` → `"4. Fetches order history with token"`
+
+Each step should be readable on its own. A reader scanning the numbered list should understand the flow without consulting the diagram boxes.
+
 ## When to Create
 
 Use sparingly. Create Dynamic diagrams for:
