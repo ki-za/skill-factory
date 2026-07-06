@@ -1,163 +1,69 @@
 ---
 name: nullables
-description: Writes tests without mocks using Nullables. Use when writing tests, especially testing code with external I/O (HTTP, files, databases, clocks, random numbers), designing infrastructure wrappers or replacing mocking libraries.
+description: Nullables — testing technique alternative to using mocking libraries. Use when writing unit tests, when code touches external I/O or state (HTTP, databases, files, clock, random) anywhere in its dependency chain, when making a system testable, or when tests are slow or flaky.
 ---
 
 # Nullables: Testing Without Mocks
 
 STARTER_CHARACTER = ⭕️
 
-## The Problem
+Nullables are production code with an off switch: classes that touch external I/O offer `create()` (real) and `createNull()` (I/O disabled, everything else runs normally). Tests are narrow (focused on one class), sociable (dependencies run for real), and state-based (assert outputs and state, never method calls). Don't use mocking libraries or DI frameworks — Nullables make them unnecessary.
 
-External I/O is slow and flaky. Tests hitting real databases, APIs, or file systems run slow and fail randomly. We want tests that run in milliseconds and never fail due to network issues.
+## The cut
 
-Mocking libraries solve speed but introduce a new problem: they couple tests to implementation by verifying specific method calls. Test code using mocking libraries is brittle—it breaks when code is refactored, even when behavior is unchanged.
-
-## The Solution
-
-Nullables are production code with an "off switch" for infrastructure—not test doubles, but real code you can ship (dry-run modes, cache warming, offline operation). They enable **narrow, sociable, state-based tests**:
-
-- **Narrow**: Each test focuses on one class/module, not broad end-to-end flows
-- **Sociable**: Tests use real dependencies—only infrastructure I/O is neutralized. (Contrast with "solitary" tests that mock everything, isolating the class under test.)
-- **State-based**: Assert on outputs and state, not on which methods were called
-
-## When to Use
-
-**Use Nullables for:**
-- Code that talks to external systems (HTTP, files, databases, clocks, random)
-- Third-party libraries you don't control
-- Non-deterministic operations
-
-**Don't use Nullables for:**
-- Pure logic — test directly, no wrapper needed
-- Your own classes — make them Nullable directly, or null their dependencies
-
-**Greenfield**: Add wrappers incrementally as tests demand—don't over-engineer upfront.
-
-**Existing codebase**: See [migration.md](references/migration.md) for incremental conversion strategies.
-
-## The Foundation: A-Frame Architecture
-
-A-Frame is the architectural insight that makes Nullables work especially well. 
-Traditional layered architecture stacks Logic on top of Infrastructure, making Logic depend on slow, brittle I/O. 
-A-Frame makes them **peers** instead:
+Fake at the lowest point — the third-party edge — never your own code:
 
 ```
-        Application (coordinates)
-            ↓              ↓
-Logic (pure, tested)    Infrastructure (Nullables)
+OrderService  →  PaymentClient  →  HttpClient  →  third-party lib
+  app code       high-level        low-level       ✂ stubbed when nulled
+                 wrapper           wrapper
 ```
 
-**Key rule:** Logic never imports Infrastructure directly. Application coordinates between them via [Logic Sandwich](references/architecture/logic-sandwich.md): read → process → write.
+- `PaymentClient` is a high-level wrapper: it abstracts one *service* and speaks domain language.
+- `HttpClient` is a low-level wrapper: it abstracts one *technology* and is generic and highly reusable.
+- The low-level wrapper holds the fork: `create()` wires the real library (node http, RestTemplate); `createNull()` wires an embedded stub — your code, returning canned data, doing no I/O.
+- Everything left of the cut is your code and runs for real in tests.
 
-- **Logic** — pure functions, no I/O
-- **Infrastructure** — wrapped with `create()`/`createNull()`
-- **Application** — thin coordination layer
+With mocks, you only fake code you own; with Nullables, you only stub code you *don't* own. Only the bottom layer has a stub — one per technology. Everything above runs real in tests, so a bug anywhere in your code turns tests red. Mocking your own classes breaks that chain: mocked code never runs, and its bugs hide behind green tests.
 
-This separation lets you swap real infrastructure for nulled versions without touching Logic. For full details, see [a-frame.md](references/architecture/a-frame.md). For event-driven code, see [event-driven.md](references/architecture/event-driven.md).
+## Two channels, plus events
 
-## Core Pattern: Two Factory Methods
+- **Reads** — configure what the world answers: `createNull(...)` parameters, in the caller's domain terms. A single value repeats forever; a list is consumed in order, then fails fast. An error is just another configured response.
+- **Writes** — observe what the code sent: `trackX()` returns recorded data to assert on. Assert an empty list to prove nothing was sent.
+- **Pushed events** — `simulateX()` methods fire a fake incoming event through the same handler path real events use.
 
-Every infrastructure wrapper has two creation paths:
+These ride on two tiny utilities, `OutputListener`/`OutputTracker` and `ConfigurableResponses`. When the codebase lacks them, copy them from [utilities.md](references/utilities.md).
 
-```javascript
-class Clock {
-  static create() {
-    return new Clock(Date);  // Real system clock
-  }
+## Choose the recipe
 
-  static createNull(now = "2020-01-01T00:00:00Z") {
-    return new Clock(new StubbedDate(now));  // Controlled clock
-  }
+Route by the dependency you need to control:
 
-  constructor(dateClass) {
-    this._dateClass = dateClass;
-  }
+- **Already Nullable** (has `createNull()`) → consume it: [consuming-nullables.md](references/consuming-nullables.md)
+- **Your class with infrastructure somewhere below** — app code, or a client for one service sitting on a lower wrapper → give it `createNull()` by composing nulled dependencies; no stub, no integration tests: [building-high-level-wrappers.md](references/building-high-level-wrappers.md)
+- **Third-party infrastructure with no wrapper yet** — HTTP lib, JDBC, filesystem, clock, random. First search the codebase for an existing wrapper (`createNull`, `Stubbed*`); build only if none exists. One wrapper per technology, reused by every service client speaking it; a single-purpose dependency may combine high and low in one wrapper, with the stub still cutting at the third-party edge:
+  - static typing (Java, C#, Kotlin) → [building-low-level-wrappers-static.md](references/building-low-level-wrappers-static.md)
+  - dynamic typing (JS, TS, Python, Ruby) → [building-low-level-wrappers-dynamic.md](references/building-low-level-wrappers-dynamic.md)
+- **Value object or config** → no off switch; `createTestInstance()` with safe overridable defaults
+- **Pure logic, no infrastructure below** → no Nullables; test directly
 
-  now() {
-    return new this._dateClass().toISOString();
-  }
-}
+Converting mock-based tests → [migration.md](references/migration.md). Structuring an app or feature around this (optional) → [architecture.md](references/architecture.md).
 
-// Embedded stub - lives in production code, not test files
-class StubbedDate {
-  constructor(isoString) {
-    this._time = new Date(isoString).getTime();
-  }
-  toISOString() {
-    return new Date(this._time).toISOString();
-  }
-}
-```
+## Rules that hold everywhere
 
-**Key principles:**
-- `createNull()` parameters match the caller's abstraction level (ISO strings, not milliseconds)
-- Embedded stubs live alongside the wrapper, implementing only what's actually used
-- Add [Output Tracking](references/building/output-tracking.md) to observe what was written
+- `create()` wires production, `createNull()` wires nulled — both factories live on the wrapped class, never on the stub. The plain constructor is the test seam: tests use it to inject dependencies they hold handles on.
+- Configure and assert in the caller's language: `PaymentClient.createNull({ approved: false })`, not HTTP statuses. Each layer decomposes its configuration into its dependency's language.
+- Nulled defaults are loud and absurd — `"Nulled HttpClient default body"`, status 503, port 42 — so accidental reliance on them fails visibly instead of passing by luck.
+- Constructors do no work. Connecting, starting, listening happen in explicit methods, so instantiating the whole dependency tree is always safe.
+- One test helper owns construction and wiring (signature shielding): optional named parameters with `IRRELEVANT_*` defaults, returning a bag of results and trackers. A signature change hits one place.
+- Stay in consumer scope: assert that the request went out and the answer got used. The dependency's own tests cover its behavior.
+- Wrappers validate external responses hard and throw detailed errors on anything unexpected (paranoic telemetry); callers decide how to recover. Test error paths as thoroughly as happy paths — they cost the same now.
+- Only the lowest wrapper gets narrow integration tests against the real system. They document the third-party behavior the stub must match — that pairing keeps the stub honest.
 
-For complete construction details, see [infrastructure-wrappers.md](references/building/infrastructure-wrappers.md).
+## Anti-patterns
 
-## Testing with Nullables
-
-Every wrapper follows the same pattern. Here's how you test code that uses one:
-
-```javascript
-describe("App", () => {
-  it("transforms input and writes result", () => {
-    const { output } = run({ args: ["hello"] });
-    assert.deepEqual(output.data, ["uryyb\n"]);  // ROT-13
-  });
-
-  function run({ args = [] } = {}) {
-    const commandLine = CommandLine.createNull({ args });
-    const output = commandLine.trackOutput();
-    new App(commandLine).run();
-    return { output };
-  }
-});
-```
-
-Tests exercise real `App` code. Only infrastructure I/O is neutralized. The `run()` helper protects tests from constructor changes ([Signature Shielding](references/test-patterns.md#helper-functions-signature-shielding)).
-
-### Testing Philosophy
-
-- **State-based, not interaction-based** — verify what was produced, not which methods were called
-- **Sociable, not solitary** — tests use real dependencies; only infrastructure is nulled. Bugs cause multiple test failures, pinpointing the problem
-- **Paranoic Telemetry** — assume everything fails. Test error paths, timeouts, and failures as thoroughly as happy paths
-- **Collaborator-Based Isolation** — use dependencies' own methods in assertions rather than hardcoding expectations:
-  ```javascript
-  // BAD: Breaks if format changes (also leaks implementation details into your clients, creates bad coupling)
-  assert.deepEqual(output.data, [{ level: "info", message: "Done", ts: 123 }]);
-  // GOOD: Uses dependency's format
-  assert.deepEqual(output.data, [logger.formatEntry("info", "Done")]);
-  ```
-- **Narrow Integration Tests** — sociable tests verify logic; add a few tests per wrapper that hit real systems to catch stub drift
-
-For testing techniques (sequences, time, events, errors), see [test-patterns.md](references/test-patterns.md).
-
-## Building Patterns
-
-These patterns work together:
-
-- **[Output Tracking](references/building/output-tracking.md)** — Observe what was produced, not which methods called
-- **[Configurable Responses](references/building/configurable-responses.md)** — Control what Nullables return at your abstraction level
-- **[Embedded Stubs](references/building/embedded-stubs.md)** — Stubs live in production code, maintained with wrapper
-- **[Wrapper Composition](references/building/infrastructure-wrappers.md#wrapper-composition-fake-it-once-you-make-it)** — High-level code composes from lower-level Nullables; only leaves have stubs
-
-## Anti-Patterns
-
-**Using mock libraries** — Couples tests to implementation. Don't import sinon, jest.mock, etc. Nullables replace them.
-
-**Constructor connects to infrastructure** — Constructors should perform no work. Defer connections to explicit methods. See [Zero-Impact Instantiation](references/building/infrastructure-wrappers.md#zero-impact-instantiation).
-
-**Parameters at wrong abstraction level** — `createNull()` should accept domain concepts, not implementation details:
-```javascript
-// BAD: Leaking HTTP details
-LoginClient.createNull({ httpResponse: { status: 200, body: '{"email":"x"}' } });
-// GOOD: Domain level
-LoginClient.createNull({ email: "user@example.com", verified: true });
-```
-
-**Stubs in test files** — Stubs belong in production code alongside the wrapper. See [embedded-stubs.md](references/building/embedded-stubs.md).
-
-**Stub as complex as the real thing** — If your stub needs significant logic, reconsider the abstraction.
+- Importing a mocking library (sinon, jest.mock, Mockito) — replaces exactly what Nullables provide and breaks the sociable chain.
+- Stubbing your own class instead of the third-party edge.
+- `createNull()` parameters that leak the layer below — HTTP details on a domain client.
+- Stubs in test files — the embedded stub is production code and lives with its wrapper.
+- A stub that reimplements the real system — stubs return canned data; needing real logic means you're cutting at the wrong level.
+- Computing an assertion's expected value with the code under test — the test then verifies nothing.
