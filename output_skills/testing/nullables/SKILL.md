@@ -28,11 +28,28 @@ With mocks, you only fake code you own; with Nullables, you only stub code you *
 
 ## Two channels, plus events
 
-- **Reads** — configure what the world answers: `createNull(...)` parameters, in the caller's domain terms. A single value repeats forever; a list is consumed in order, then fails fast. An error is just another configured response.
-- **Writes** — observe what the code sent: `trackX()` returns recorded data to assert on. Assert an empty list to prove nothing was sent.
-- **Pushed events** — `simulateX()` methods fire a fake incoming event through the same handler path real events use.
+Every Nullable offers the same two factory methods:
 
-These ride on two tiny utilities, `OutputListener`/`OutputTracker` and `ConfigurableResponses`. When the codebase lacks them, copy them from [utilities.md](references/utilities.md).
+```javascript
+Clock.create()                            // production: the real system clock
+Clock.createNull({ now: "2024-01-01" })   // test: frozen time, no external state
+```
+
+Tests interact with a nulled instance through three moves:
+
+- **Reads** — configure what the world answers, as `createNull(...)` parameters in the caller's domain terms: `PaymentClient.createNull({ approved: false })`, `DieRoller.createNull([3, 5, 1])`. A single value repeats forever; a list is consumed in order, then fails fast. An error is just another configured response: `createNull([{ error: "boom" }])`.
+- **Writes** — observe what the code sent:
+
+  ```javascript
+  const emails = emailer.trackOutput();
+  await service.register("a@b.com");
+  assert.deepEqual(emails.data, [{ to: "a@b.com", subject: "Welcome" }]);
+  ```
+
+  The same tracker can prove a negative — a test where registration is refused asserts `emails.data` is `[]`: no email went out.
+- **Pushed events** — fire a fake incoming event through the same handler path a real event takes: `network.simulateMessage("client-1", "Hello")`.
+
+These ride on two tiny utilities, `OutputListener`/`OutputTracker` and `ConfigurableResponses`. When the codebase lacks them, add them — example implementations in [utilities.md](references/utilities.md).
 
 ## Choose the recipe
 
@@ -51,7 +68,7 @@ Converting mock-based tests → [migration.md](references/migration.md). Structu
 ## Rules that hold everywhere
 
 - `create()` wires production, `createNull()` wires nulled — both factories live on the wrapped class, never on the stub. The plain constructor is the test seam: tests use it to inject dependencies they hold handles on.
-- Configure and assert in the caller's language: `PaymentClient.createNull({ approved: false })`, not HTTP statuses. Each layer decomposes its configuration into its dependency's language.
+- Configure and assert as the state of the world the caller wants to control, in the caller's language: `PaymentClient.createNull({ approved: false })`, not HTTP statuses. Each layer decomposes its configuration into its dependency's language.
 - Nulled defaults are loud and absurd — `"Nulled HttpClient default body"`, status 503, port 42 — so accidental reliance on them fails visibly instead of passing by luck.
 - Constructors do no work. Connecting, starting, listening happen in explicit methods, so instantiating the whole dependency tree is always safe.
 - One test helper owns construction and wiring (signature shielding): optional named parameters with `IRRELEVANT_*` defaults, returning a bag of results and trackers. A signature change hits one place.

@@ -98,6 +98,8 @@ if (response.status !== 200) {
 
 ## Decomposing configurable responses
 
+Design the options as the *state of the outside world* callers want to control — "which books are out", "the account is unverified" — not as scripted method return values; scripting returns is a mock in disguise. When there's no meaningful world-state to model (a die roller), specifying responses directly is fine: use judgment, default to state. Give each concern its own named parameter with a default, so a test states only what it cares about and stays silent on the rest.
+
 `createNull()` accepts options in the *caller's* language and translates them into the *dependency's* language:
 
 ```javascript

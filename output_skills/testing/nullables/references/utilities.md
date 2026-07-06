@@ -1,6 +1,6 @@
 # Utilities: OutputListener and ConfigurableResponses
 
-Two tiny reusable classes carry the whole approach — one for the write channel, one for the read channel. Copy them into the codebase (e.g. `infrastructure/util/`) when it doesn't have them; they are production code and get committed like any other.
+Two tiny reusable classes carry the whole approach — one for the write channel, one for the read channel. Copy them into the codebase (e.g. `infrastructure/util/`) when it doesn't have them; they are production code and get committed like any other. JS and Java versions are below — in another language, port them, preserving the semantics stated with each (they are well under 100 lines apiece).
 
 ## OutputListener / OutputTracker
 
