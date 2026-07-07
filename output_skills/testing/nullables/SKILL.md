@@ -51,25 +51,29 @@ Tests interact with a nulled instance through three moves:
 
 These ride on two tiny utilities, `OutputListener`/`OutputTracker` and `ConfigurableResponses`. When the codebase lacks them, add them — example implementations in [utilities.md](references/utilities.md).
 
-## Choose the recipe
+## Procedure
 
-Route by the dependency you need to control. For a whole service or system ("make this testable"), map its dependency tree first and convert bottom-up — the conversion orders in [migration.md](references/migration.md) apply whether or not mocks exist yet.
+Start from the code you need to test. For a whole system, pick one class and repeat; conversion order across many classes is in [migration.md](references/migration.md).
 
-- **Already Nullable** (has `createNull()`) → consume it: [consuming-nullables.md](references/consuming-nullables.md)
-- **Your class with infrastructure somewhere below** — app code, or a client for one service sitting on a lower wrapper → give it `createNull()` by composing nulled dependencies; it needs no stub and no integration tests: [building-high-level-wrappers.md](references/building-high-level-wrappers.md)
-- **Third-party infrastructure with no wrapper yet** — HTTP lib, database driver, filesystem, clock, random. First search the codebase for an existing wrapper (`createNull`, `Stubbed*`); build only if none exists. One wrapper per technology, reused by every service client speaking it; a single-purpose dependency may combine high and low in one wrapper, with the stub still cutting at the third-party edge:
-  - the seam is an interface you declare → [building-low-level-wrappers-static.md](references/building-low-level-wrappers-static.md)
-  - the seam is duck-typed — any object with the right methods → [building-low-level-wrappers-dynamic.md](references/building-low-level-wrappers-dynamic.md)
-- **Value object or config** → no off switch; `createTestInstance()` with safe overridable defaults
-- **Pure logic, no infrastructure below** → no Nullables; test directly
+1. List the dependencies of the class under test. Classify each one you need to control:
+   - Pure logic, nothing external below → test directly, nothing to null.
+   - Value object or config → `createTestInstance()` with safe overridable defaults. If it holds an infrastructure object, default it to the nulled version.
+   - Already has `createNull()` → go to step 4.
+   - Touches infrastructure below but has no `createNull()` → step 2.
+2. Follow that dependency's chain down until you reach code you don't own — a third-party library doing I/O. That is the edge.
+   - The codebase already has a wrapper for this technology (search `createNull`, `Stubbed`, `infrastructure/`) → reuse it, go to step 3.
+   - No wrapper → build one: [building-low-level-wrappers-static.md](references/building-low-level-wrappers-static.md) when the seam is an interface you declare, [building-low-level-wrappers-dynamic.md](references/building-low-level-wrappers-dynamic.md) when any object with the right methods will do. One wrapper per technology.
+3. Walk back up the chain. Give each class on the way `create()` and `createNull()`, composing its nulled dependencies: [building-high-level-wrappers.md](references/building-high-level-wrappers.md). At each layer, keep the configuration in that layer's own language and decompose it downward — this is where abstractions leak if you rush.
+4. Write the tests: [consuming-nullables.md](references/consuming-nullables.md).
 
-Converting mock-based tests, or making an untested system testable → [migration.md](references/migration.md). Structuring an app or feature around this (optional) → [architecture.md](references/architecture.md).
+Converting a mock-based suite → [migration.md](references/migration.md). Improving existing nullables → walk their layers and check each against the rules below, plus: the stub sits at the true edge, one stub per technology (no duplicates), no leftover throwaway stubs, each layer's `createNull()` speaks that layer's language. Structuring a new app around this (optional) → [architecture.md](references/architecture.md).
 
 ## Rules that hold everywhere
 
 - `create()` wires production, `createNull()` wires nulled — both factories live on the wrapped class, never on the stub. The plain constructor is the test seam: tests use it to inject dependencies they hold handles on.
 - Configure and assert as the state of the world the caller wants to control, in the caller's language: `PaymentClient.createNull({ approved: false })`, not HTTP statuses. Each layer decomposes its configuration into its dependency's language.
-- Nulled defaults are loud and absurd — `"Nulled HttpClient default body"`, status 503, port 42 — so accidental reliance on them fails visibly instead of passing by luck.
+- Bare `createNull()` always works: every parameter has a safe default, so one call nulls the whole dependency chain from the top (parameterless instantiation). Nulling is a safe operation, like a null object.
+- The data those defaults return is loud and absurd — `"Nulled HttpClient default body"`, status 503, port 42. Nothing breaks on it, but a test that accidentally depends on it sees obviously fake values instead of passing by luck. Failing fast is reserved for overrunning explicit configuration: an exhausted response list throws "No more responses configured…".
 - Constructors do no work. Connecting, starting, listening happen in explicit methods, so instantiating the whole dependency tree is always safe.
 - One test helper owns construction and wiring (signature shielding): optional named parameters with `IRRELEVANT_*` defaults, returning a bag of results and trackers. A signature change hits one place.
 - Stay in consumer scope: assert that the request went out and the answer got used. The dependency's own tests cover its behavior.
