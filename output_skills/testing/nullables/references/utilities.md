@@ -2,6 +2,11 @@
 
 Two tiny reusable classes carry the whole approach — one for the write channel, one for the read channel. Copy them into the codebase (e.g. `infrastructure/util/`) when it doesn't have them; they are production code and get committed like any other. JS and Java versions are below — in another language, port them, preserving the semantics stated with each (they are well under 100 lines apiece).
 
+## Contents
+
+- OutputListener / OutputTracker (write channel)
+- ConfigurableResponses (read channel)
+
 ## OutputListener / OutputTracker
 
 Wrappers hold an `OutputListener` and `emit(domainData)` at the moment of each write, in code shared by real and nulled paths. Tests call `trackX()` to get an `OutputTracker`. No tracker subscribed → emit is a no-op.

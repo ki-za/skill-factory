@@ -62,17 +62,17 @@ Start from the code you need to test. For a whole system, pick one class and rep
    - Touches infrastructure below but has no `createNull()` → step 2.
 2. Follow that dependency's chain down until you reach code you don't own — a third-party library doing I/O. That is the edge.
    - The codebase already has a wrapper for this technology (search `createNull`, `Stubbed`, `infrastructure/`) → reuse it, go to step 3.
-   - No wrapper → build one: [building-low-level-wrappers-static.md](references/building-low-level-wrappers-static.md) when the seam is an interface you declare, [building-low-level-wrappers-dynamic.md](references/building-low-level-wrappers-dynamic.md) when any object with the right methods will do. One wrapper per technology.
+   - No wrapper → build one: [building-low-level-wrappers-static.md](references/building-low-level-wrappers-static.md) when the seam is an interface you declare, [building-low-level-wrappers-dynamic.md](references/building-low-level-wrappers-dynamic.md) when any object with the right methods will do.
 3. Walk back up the chain. Give each class on the way `create()` and `createNull()`, composing its nulled dependencies: [building-high-level-wrappers.md](references/building-high-level-wrappers.md). At each layer, keep the configuration in that layer's own language and decompose it downward — this is where abstractions leak if you rush.
 4. Write the tests: [consuming-nullables.md](references/consuming-nullables.md).
 
-Converting a mock-based suite → [migration.md](references/migration.md). Improving existing nullables → walk their layers and check each against the rules below, plus: the stub sits at the true edge, one stub per technology (no duplicates), no leftover throwaway stubs, each layer's `createNull()` speaks that layer's language. Structuring a new app around this (optional) → [architecture.md](references/architecture.md).
+Converting a mock-based suite → [migration.md](references/migration.md). Improving existing nullables → walk their layers and check each against The cut and the rules below, plus: no leftover throwaway stubs. Structuring a new app around this (optional) → [architecture.md](references/architecture.md).
 
 ## Rules at every layer
 
 - `create()` wires production, `createNull()` wires nulled — both factories live on the wrapped class, never on the stub. The plain constructor is the test seam: tests use it to inject dependencies they hold handles on.
 - Configure and assert as the state of the world the caller wants to control, in the caller's language: `PaymentClient.createNull({ approved: false })`, not HTTP statuses. Each layer decomposes its configuration into its dependency's language.
-- Bare `createNull()` always works: every parameter has a safe default, so one call nulls the whole dependency chain from the top (parameterless instantiation). Nulling is a safe operation, like a null object.
+- Bare `createNull()` always works: every parameter has a safe default, so one call nulls the whole dependency chain from the top (parameterless instantiation).
 - The data those defaults return is loud and absurd — `"Nulled HttpClient default body"`, status 503, port 42. Nothing breaks on it, but a test that accidentally depends on it sees obviously fake values instead of passing by luck. Failing fast is reserved for overrunning explicit configuration: an exhausted response list throws "No more responses configured…".
 - Constructors do no work. Connecting, starting, listening happen in explicit methods, so instantiating the whole dependency tree is always safe.
 - One test helper owns construction and wiring (signature shielding): optional named parameters with `IRRELEVANT_*` defaults, returning a bag of results and trackers. A signature change hits one place.
@@ -82,9 +82,7 @@ Converting a mock-based suite → [migration.md](references/migration.md). Impro
 
 ## Anti-patterns
 
-- Importing a mocking library (sinon, jest.mock, Mockito) — replaces exactly what Nullables provide and breaks the sociable chain.
-- Stubbing your own class instead of the third-party edge.
-- `createNull()` parameters that leak the layer below — HTTP details on a domain client.
-- Stubs in test files — the embedded stub is production code and lives with its wrapper.
+- Stubs in test files — the embedded stub is production code and lives with its wrapper. Nulled instances have production uses of their own: a dry-run flag, cache warming.
 - A stub that reimplements the real system — stubs return canned data; needing real logic means you're cutting at the wrong level.
+- A `nulled` flag forking the wrapper's logic with if-branches — nulling swaps the wrapped dependency at the seam; the wrapper keeps one code path.
 - Computing an assertion's expected value with the code under test — the test then verifies nothing.

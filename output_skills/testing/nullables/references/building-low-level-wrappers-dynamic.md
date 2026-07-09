@@ -13,6 +13,7 @@ The bottom layer: a wrapper for one communication *technology* (HTTP, database d
 - The response ladder
 - Match real behavior where it counts
 - Output tracking
+- Behavior simulation
 - Minimal example
 
 ## Find the edge
@@ -134,6 +135,21 @@ Stubs return hardcoded data; prefer that over reimplementing real behavior (a fa
 ## Output tracking
 
 Technically separate from nullability, usually built at the same time: emit in the shared request path (works real and nulled), return a tracker from `trackRequests()`. See utilities.md for `OutputListener`.
+
+## Behavior simulation
+
+When the technology pushes events (sockets, queues, incoming requests), add `simulateX()` methods so tests can fire an incoming event without the real system. Extract the body of each real event subscription into a private handler; `simulateX()` calls that same handler — one path, real and simulated:
+
+```javascript
+async startAsync() {
+  this._io.on("connection", (socket) => this.#handleConnection(socket));
+}
+simulateConnection(clientId) {
+  this.#handleConnection(new StubbedSocket(clientId));
+}
+```
+
+Simulation methods are tested, production-grade code and work on real and nulled instances alike.
 
 ## Minimal example
 

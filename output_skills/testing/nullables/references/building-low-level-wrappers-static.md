@@ -13,6 +13,7 @@ The bottom layer: a wrapper for one communication *technology* (HTTP, database d
 - Grow the stub by instrumentation
 - The response ladder
 - Named null factories
+- Behavior simulation
 - Exceptions at the boundary
 - Complete examples
 
@@ -84,7 +85,7 @@ Making an existing class Nullable takes five small steps, each compilable:
 2. Extract the thin interface around the third-party calls; add Real implementation; wrapper logic now calls the interface.
 3. Add Stubbed implementation and `createNull()`.
 4. Add configurable responses (`createNull(Integer... rolls)`).
-5. Switch tests from any hand-written test double to `createNull()`; delete the double.
+5. Switch tests from any hand-written test double to `createNull()`; delete the double — and if an interface (port) existed only so tests could substitute it, collapse it: the one nullable class replaces interface, real implementation, and stub.
 
 ## Design the public interface
 
@@ -153,6 +154,10 @@ GameDatabase.createCorruptedNull();      // load throws GameCorrupted
 ```
 
 For a class with several nullable dependencies, collect configuration in a builder (`createNull(new NulledResponses().withDieRolls(1,2,3).withGame(game))`) — see building-high-level-wrappers.md.
+
+## Behavior simulation
+
+When the technology pushes events (message listeners, callbacks), add `simulateX()` methods so tests can fire an incoming event without the real system. Extract the body of the real listener into a private handler and have `simulateX()` call that same handler — one path, real and simulated. Simulation methods are tested, production-grade code and work on real and nulled instances alike.
 
 ## Exceptions at the boundary
 
