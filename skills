@@ -9,6 +9,10 @@ import shutil
 import sys
 from pathlib import Path
 
+
+def relative_symlink_target(source, target):
+    return os.path.relpath(source.resolve(), start=target.parent.resolve())
+
 REPO_ROOT = Path(__file__).parent.resolve()
 SKILLS_SOURCE_DIR = REPO_ROOT / "output_skills"
 GLOBAL_SKILLS_DIR = Path(os.environ.get("AGENT_SKILLS_DIR", Path.home() / ".agents" / "skills"))
@@ -81,7 +85,7 @@ def install_skill(registry, skill_name):
             return False
 
     GLOBAL_SKILLS_DIR.mkdir(parents=True, exist_ok=True)
-    target.symlink_to(source)
+    target.symlink_to(relative_symlink_target(source, target))
     return True
 
 
