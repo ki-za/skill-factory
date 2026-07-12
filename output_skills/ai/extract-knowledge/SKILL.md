@@ -1,7 +1,7 @@
 ---
 name: extract-knowledge
-description: "Extracts what the session learned into prose that stands alone, or reviews existing text through the same distortion lenses."
 disable-model-invocation: true
+description: "Extracts what the session learned into prose that stands alone, or reviews existing text through the same distortion lenses."
 argument-hint: [topic | file | pasted text]
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: nullables
+disable-model-invocation: true
 description: Nullables — testing technique alternative to using mocking libraries. Use when writing unit tests, when code touches external I/O or state (HTTP, databases, files, clock, random) anywhere in its dependency chain, when making a system testable, or when tests are slow or flaky.
 ---
 

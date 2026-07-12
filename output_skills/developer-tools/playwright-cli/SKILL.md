@@ -1,5 +1,6 @@
 ---
 name: playwright-cli
+disable-model-invocation: true
 description: "Drive a browser from the terminal with playwright-cli: snapshot the page, then act on elements by ref. Use when automating browser interactions, filling web forms, testing UIs, or driving logged-in web apps from the command line."
 ---
 

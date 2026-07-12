@@ -1,5 +1,6 @@
 ---
 name: hexagonal-architecture
+disable-model-invocation: true
 description: Applies hexagonal (ports & adapters) architecture. Use when designing application structure, separating domain from infrastructure, creating testable boundaries, or when user mentions ports, adapters, hexagonal, or clean architecture.
 ---
 

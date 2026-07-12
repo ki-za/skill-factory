@@ -1,5 +1,6 @@
 ---
 name: socratic-learning
+disable-model-invocation: true
 description: Facilitates deep, structured learning of a topic — gathering source material, assessing the learner's gaps, then teaching through guided Socratic sessions. Use when someone wants to genuinely study or be tutored on a subject over time, not get a quick answer.
 ---
 

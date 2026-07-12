@@ -1,5 +1,6 @@
 ---
 name: refactoring
+disable-model-invocation: true
 description: Refactoring process. Invoke immediately when user or document mentions refactoring, or proactively when code gets too complex or messy.
 ---
 

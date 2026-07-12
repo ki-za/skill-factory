@@ -1,5 +1,6 @@
 ---
 name: c4-diagrams
+disable-model-invocation: true
 description: Creates C4 architecture diagrams for designing, documenting, or understanding software architecture. Use when working through system design, mapping existing codebases, or visualizing structure at any level from system landscape down to code.
 ---
 

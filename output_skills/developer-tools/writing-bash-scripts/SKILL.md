@@ -1,5 +1,6 @@
 ---
 name: writing-bash-scripts
+disable-model-invocation: false
 description: Bash script style guide. Always use when writing bash scripts, shell scripts, or CLI bash tools.
 ---
 

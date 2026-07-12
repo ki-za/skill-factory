@@ -1,5 +1,6 @@
 ---
 name: ai-patterns
+disable-model-invocation: true
 description: Reference patterns for augmented coding with AI. Use when discussing AI coding patterns, anti-patterns, obstacles, context management, steering AI, or looking up Lexler's patterns collection.
 ---
 

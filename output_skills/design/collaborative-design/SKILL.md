@@ -1,5 +1,6 @@
 ---
 name: collaborative-design
+disable-model-invocation: true
 description: Designs software features collaboratively through visual scenarios and iterative refinement. Use when designing features, tools, UIs, workflows, or any system before implementation.
 ---
 

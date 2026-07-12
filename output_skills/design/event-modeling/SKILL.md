@@ -1,5 +1,6 @@
 ---
 name: event-modeling
+disable-model-invocation: true
 description: Designs systems using Event Modeling.
 ---
 

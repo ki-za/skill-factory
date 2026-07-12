@@ -1,5 +1,6 @@
 ---
 name: align
+disable-model-invocation: false
 description: Presents a proposed approach in progressive confirmable chunks with recommended decisions and alternatives. Use when aligning on a design, plan, or technical approach before implementation.
 argument-hint: [file|folder]
 ---

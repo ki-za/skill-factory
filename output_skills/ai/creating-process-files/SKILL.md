@@ -1,5 +1,6 @@
 ---
 name: creating-process-files
+disable-model-invocation: true
 description: Creates process files - text as code instructions for reliable AI workflows. Use when creating new process files.
 ---
 

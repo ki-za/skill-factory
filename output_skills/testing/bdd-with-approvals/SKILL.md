@@ -1,5 +1,6 @@
 ---
 name: bdd-with-approvals
+disable-model-invocation: true
 description: Scannable BDD tests written in domain language. Use when doing BDD.
 ---
 

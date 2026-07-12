@@ -1,5 +1,6 @@
 ---
 name: growing-outside-in-systems
+disable-model-invocation: true
 description: >
   Drive feature development using Outside-In TDD with Hexagonal Architecture.
   Design emerges through inline code, in-memory fakes, interface extraction, and deferred I/O.

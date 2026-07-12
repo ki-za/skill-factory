@@ -1,5 +1,6 @@
 ---
 name: using-uv
+disable-model-invocation: true
 description: Python package and project management with UV. Use when creating Python scripts, initializing projects, or managing dependencies.
 ---
 

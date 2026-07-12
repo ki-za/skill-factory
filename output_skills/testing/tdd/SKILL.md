@@ -1,5 +1,6 @@
 ---
 name: tdd
+disable-model-invocation: true
 description: Test-driven development (TDD) process used when writing code. Use whenever you are adding any new code, unless the user explicitly asks to skip TDD or the code is exploratory/spike.
 ---
 

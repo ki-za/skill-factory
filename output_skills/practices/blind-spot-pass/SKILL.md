@@ -1,7 +1,7 @@
 ---
 name: blind-spot-pass
-description: Run a blind-spot pass on a rough goal before brainstorming or implementation.
 disable-model-invocation: true
+description: Run a blind-spot pass on a rough goal before brainstorming or implementation.
 ---
 
 STARTER_CHARACTER = 🧭
