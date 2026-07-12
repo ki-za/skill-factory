@@ -9,6 +9,30 @@ import re
 import yaml
 from pathlib import Path
 
+
+ALLOWED_PROPERTIES = {
+    'name',
+    'description',
+    'license',
+    'allowed-tools',
+    'metadata',
+    'compatibility',
+    'when_to_use',
+    'argument-hint',
+    'arguments',
+    'disable-model-invocation',
+    'user-invocable',
+    'disallowed-tools',
+    'model',
+    'effort',
+    'context',
+    'agent',
+    'hooks',
+    'paths',
+    'shell',
+}
+
+
 def validate_skill(skill_path):
     """Basic validation of a skill"""
     skill_path = Path(skill_path)
@@ -37,9 +61,6 @@ def validate_skill(skill_path):
             return False, "Frontmatter must be a YAML dictionary"
     except yaml.YAMLError as e:
         return False, f"Invalid YAML in frontmatter: {e}"
-
-    # Define allowed properties
-    ALLOWED_PROPERTIES = {'name', 'description', 'license', 'allowed-tools', 'metadata', 'compatibility'}
 
     # Check for unexpected properties (excluding nested keys under metadata)
     unexpected_keys = set(frontmatter.keys()) - ALLOWED_PROPERTIES

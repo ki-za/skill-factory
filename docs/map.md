@@ -2,9 +2,10 @@
 
 ```
 skill-factory/
-├── CLAUDE.md                           # Agent instructions for this project
+├── AGENTS.md                           # Agent-agnostic instructions for this project
+├── SETUP.md                            # Fresh-user setup checklist
 ├── update-docs                         # Bash wrapper to update documentation
-├── skills                              # Install script: symlink/copy skills into ~/.claude/skills or project
+├── skills                              # Install script: symlink/copy skills into ~/.agents/skills or project
 ├── playground/                         # Throw-away exploratory code (gitignored)
 ├── scripts/                            # Automation scripts
 │   ├── sources.txt                     # URLs to fetch docs from
@@ -78,5 +79,5 @@ Eval workspaces are created as siblings to skill directories, named `{skill-name
 ## Purpose
 
 - **docs/**: All instructional material and fetched dependencies for creating and evaluating skills
-- **output_skills/**: Completed skills, each in a category subfolder. Symlinked to `~/.claude/skills/` via the `./skills` script
-- **CLAUDE.md**: Project instructions — overrides the Anthropic skill-creator plugin
+- **output_skills/**: Completed skills, each in a category subfolder. Symlinked to `~/.agents/skills/` by default via the `./skills` script
+- **AGENTS.md**: Agent-agnostic project instructions — supersedes the Anthropic skill-creator process for this repo

@@ -1,0 +1,44 @@
+{
+  "skill_name": "blind-spot-pass",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run a blind-spot pass on this rough goal before we brainstorm or change code. I want to add passkeys to our web app. I know the product side fairly well, but I have never worked in this repository's authentication code. Users are asking for passwordless login, we already support email/password and Google OAuth, and the app has a separate admin area. I care about keeping existing accounts working and avoiding a migration that locks people out. I have not inspected the auth modules or looked at how sessions are stored. Please inspect the repository and its history where relevant, then give me the high-level landscape, direction check, major forks, granular blind spots, evidence ledger, and bottom line. Do not implement anything or brainstorm feature ideas.",
+      "expected_output": "An evidence-backed orientation report grounded in the repository, its authentication patterns, and relevant history. It should identify the major architectural and account-recovery forks, distinguish observations from inferences and unknowns, check whether the goal is sufficiently directed, and stop before implementation or solution brainstorming.",
+      "files": [],
+      "expectations": [
+        "The response inspects relevant repository files, tests, documentation, or history rather than relying only on generic passkey advice.",
+        "The report follows a broad-to-granular structure and includes the current goal, landscape, direction check, major forks, granular blind spots, evidence ledger, and bottom line.",
+        "The response identifies direction-changing concerns such as account linking, session or credential storage, recovery, existing authentication flows, and admin-area implications when supported by the repository or clearly marked as hypotheses.",
+        "Facts, inferences, hypotheses, and unresolved questions are explicitly distinguished and sources are named.",
+        "The response does not modify code, write an implementation plan, or propose a menu of new feature solutions."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I want a blind-spot pass before deciding whether to make a short product demo video look more polished. Here is my rambling context: I can edit with ffmpeg and Remotion, but I do not know much about color grading or motion design. The audience is potential developers evaluating our API. The current cut is technically clear but feels flat and amateurish. I want it to feel credible and easy to follow, and I have about one day. I have not defined what 'polished' means or looked at professional examples. Please research the territory enough to teach me the concepts, common quality criteria, common pitfalls, and major forks in approach. Check whether this is actually a color-grading problem, and tell me what I need to understand before choosing a direction. Do not pitch treatments, write code, or design the video yet.",
+      "expected_output": "A teaching-oriented landscape report for an unfamiliar domain. It should establish vocabulary and quality criteria, use targeted reputable research when available, distinguish color grading from adjacent causes of an unpolished video, identify high-impact forks and pitfalls, and leave the user with decision-making clarity rather than proposed treatments.",
+      "files": [],
+      "expectations": [
+        "The response explains the relevant territory and vocabulary at a beginner-accessible level, including what color grading can and cannot address.",
+        "The response grounds claims in named sources or clearly labels them as general inferences or hypotheses when research is unavailable.",
+        "The direction check considers the stated audience, credibility goal, one-day constraint, and the possibility that the perceived problem has multiple causes.",
+        "The response surfaces major forks and practical pitfalls, then becomes more granular before ending with a concise bottom line.",
+        "The response does not generate a treatment menu, prototype, implementation plan, code, or other solution artifact."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Use a blind-spot pass on this rough thought: 'We should build something that helps onboarding because people churn, maybe an interactive checklist or better emails or an AI guide. I have a feeling the first week is bad but I do not really know. Can you tell me what we should build?'\n\nStart by interviewing me for the missing context you need. Ask one question at a time and prioritize questions whose answers could change the problem framing. Do not jump into brainstorming, research, or a list of product ideas before the starting context is adequate.",
+      "expected_output": "A disciplined first-pass interview that does not pretend the goal is sufficiently shaped. It should ask the highest-leverage missing-context question one at a time, explain briefly why the question matters when useful, and defer solution generation until the problem, users, evidence, constraints, and success criteria are clearer.",
+      "files": [],
+      "expectations": [
+        "The response begins by identifying missing high-impact context rather than presenting generic onboarding solutions or a completed landscape report.",
+        "The response asks one focused question at a time and prioritizes questions that could change the problem framing.",
+        "The interview covers or seeks the problem evidence, affected users, current onboarding experience, constraints, prior investigation, and success criteria before solution selection.",
+        "The response keeps the rough goal distinct from the proposed solutions and does not treat the user's examples as decisions.",
+        "The response defers brainstorming and research until enough starting context exists to make them useful."
+      ]
+    }
+  ]
+}

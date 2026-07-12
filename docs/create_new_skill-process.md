@@ -4,9 +4,9 @@ STARTER_CHARACTER = 📚
 
 ## Description
 
-Create a Claude Code skill.
+Create an Agent Skill.
 
-Skills are a context management mechanism. They package knowledge Claude needs for specific tasks while keeping context lean through progressive disclosure:
+Skills are a context management mechanism. They package knowledge an agent needs for specific tasks while keeping context lean through progressive disclosure:
 - **Startup**: Only name + description loaded (~100 tokens per skill)
 - **When triggered**: Full SKILL.md instructions loaded
 - **As needed**: References loaded only when the task requires them
@@ -33,8 +33,8 @@ Then read `docs/knowledge/writing-great-skills/SKILL.md` and its `GLOSSARY.md` �
 
 ### 3. Clarify the Goal
 Ask the user:
-- What specific task should Claude be able to do?
-- Think about what Claude does NOT already know that this skill needs to provide. Show it as a suggestion to the user.
+- What specific task should the agent be able to do?
+- Think about what the agent does NOT already know that this skill needs to provide. Show it as a suggestion to the user.
 - Are there examples that should be included as reference material? You can search online or ask for the user input.
 
 ### 4. Choose Invocation, Propose Name and Description
@@ -50,7 +50,7 @@ Based on what the user described, SUGGEST:
 - A description for discovery (see guidance below)
 
 **Writing the description:**
-The description is the primary trigger mechanism — Claude Code uses it to decide when to activate a skill from potentially 100+ installed skills. It must be lean and precise.
+The description is the primary trigger mechanism — agent harnesses use it to decide when to activate a skill from potentially 100+ installed skills. It must be lean and precise.
 
 Distill the essential purpose. Don't echo the user's phrasing — capture the *gist* of what the skill is and when it should fire. Lead with what the skill does (third person), then include trigger context.
 
@@ -105,7 +105,7 @@ description: [What it does]. Use when [trigger context]. (drop the second part i
 
 **Body:**
 - Start with `STARTER_CHARACTER = [emoji]` — This signals when the skill is active. Pick an emoji that represents the skill's purpose as much as possible.
-- Concise instructions. Assume Claude is smart, but help guide and focus it by providing good order and progressive disclosure.
+- Concise instructions. Assume the agent is capable, but help guide and focus it by providing good order and progressive disclosure.
 - End each step on a completion criterion the agent can check — exhaustive where it matters ("every modified model accounted for", not "produce a change list"). A vague criterion invites premature completion.
 - Collapse restatements into a leading word — one pretrained concept the agent thinks with (a *tight* loop, the test goes *red*). Reuse it in the description so invocation and execution share the anchor.
 - Prompt the positive: state the target behaviour directly. Keep a prohibition only as a hard guardrail you can't phrase positively, and pair it with what to do instead.
@@ -131,7 +131,7 @@ uv run --with pyyaml docs/knowledge/anthropic-skill-creator/scripts/quick_valida
 
 Then re-read `docs/knowledge/anthropic-skill-docs/best-practices.md` and `skills.md` (troubleshooting section). Compare to what you created:
 - Does the description include clear trigger words?
-- Run the no-op test sentence by sentence: does this sentence change behaviour versus what Claude does by default? Delete failing sentences whole — rewriting them just shrinks the no-op.
+- Run the no-op test sentence by sentence: does this sentence change behaviour versus what a capable agent does by default? Delete failing sentences whole — rewriting them just shrinks the no-op.
 - Single source of truth: each meaning lives in one place, so changing a behaviour is a one-place edit.
 - Are references one level deep?
 - Any anti-patterns present?
@@ -139,7 +139,7 @@ Then re-read `docs/knowledge/anthropic-skill-docs/best-practices.md` and `skills
 Suggest improvements before proceeding.
 
 ### 10. Evaluate (optional)
-Ask the user if they'd like to create evals for this skill. Explain that evals are realistic test prompts paired with assertions about expected output — they measure whether the skill actually improves Claude's behavior compared to baseline, track quality across iterations, and catch regressions. If yes, follow `docs/create_evals-process.md`.
+Ask the user if they'd like to create evals for this skill. Explain that evals are realistic test prompts paired with assertions about expected output — they measure whether the skill actually improves agent behavior compared to baseline, track quality across iterations, and catch regressions. If yes, follow `docs/create_evals-process.md`.
 
 ### 11. Install Skill (optional)
 Ask user: **Global skill or project skill?**
@@ -156,12 +156,12 @@ Ask user: **Global skill or project skill?**
 
 Check status with `./skills status` or `./skills local status`.
 
-Tell user to restart Claude Code to load the skill.
+Tell the user to restart or refresh their agent harness if it does not detect skill changes live.
 
 ### 12. Test
-- Restart Claude Code to load the skill
-- Ask Claude to do a task that should trigger the skill
-- Verify: Does it trigger? Does Claude follow instructions correctly?
+- Restart or refresh the agent harness if needed
+- Ask the agent to do a task that should trigger the skill
+- Verify: Does it trigger? Does the agent follow instructions correctly?
 - Try edge cases
 
 ### 13. Iterate
@@ -171,10 +171,10 @@ Diagnose observed problems against the failure modes (full definitions in `docs/
 - Same meaning in several places → duplication: collapse to a single source of truth, or into a leading word
 - Lines that no longer bear on what the skill does → sediment: prune
 - Every line live, skill still too long → sprawl: disclose reference behind pointers, split by branch
-- Lines Claude obeys by default → no-ops: delete
+- Lines a capable agent obeys by default → no-ops: delete
 - Steering by prohibition → negation: restate as the target behaviour
 
 ## Output
-Save completed skill to `output_skills/[category]/[skill-name]/SKILL.md`.
+Save completed skill to `output_skills/[category]/[skill-name]/SKILL.md`. When installing globally, `./skills` symlinks it into `~/.agents/skills/` by default; project installs go into the current project’s `.agents/skills/`. Use `AGENT_SKILLS_DIR` or `PROJECT_AGENT_SKILLS_DIR` if a harness expects a different location.
 
 Look at existing category folders in `output_skills/` and pick the best fit. Confirm with the user before saving. If none fit well, propose a new category — suggest your best pick, list alternatives you considered with brief reasons for rejecting them, then let the user decide.

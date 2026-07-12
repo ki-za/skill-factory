@@ -4,14 +4,15 @@
 # ///
 
 import curses
+import os
 import shutil
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.resolve()
 SKILLS_SOURCE_DIR = REPO_ROOT / "output_skills"
-GLOBAL_SKILLS_DIR = Path.home() / ".claude" / "skills"
-LOCAL_SKILLS_DIR = Path.cwd() / ".claude" / "skills"
+GLOBAL_SKILLS_DIR = Path(os.environ.get("AGENT_SKILLS_DIR", Path.home() / ".agents" / "skills"))
+LOCAL_SKILLS_DIR = Path(os.environ.get("PROJECT_AGENT_SKILLS_DIR", Path.cwd() / ".agents" / "skills"))
 
 
 def discover_skills():
