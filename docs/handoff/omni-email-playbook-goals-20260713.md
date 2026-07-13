@@ -162,7 +162,7 @@ Any reusable knowledge discovered during an email session must be offered after 
 6. **Knowledge-review prompt.** Decide how to offer inbox/direct-playbook/no-storage without pulling attention away from `email-voice`.
 7. **Boilerplate boundary.** Distinguish safe reusable phrasing from context-dependent claims and commitments.
 8. **Examples and privacy.** Decide how full client-specific examples, sanitised examples, and distilled patterns participate in retrieval.
-9. **Evaluation.** Include cases for underspecified client intent, researchable facts, colleague-only unknowns, routine boilerplate, outbound messages, and the post-confirmation storage gate.
+9. **Evaluation after observation.** Use several real email-specification runs first, then derive cases from observed failures; likely branches include underspecified client intent, researchable facts, colleague-only unknowns, routine boilerplate, outbound messages, and the post-confirmation storage gate.
 
 ## Evidence and source anchors
 

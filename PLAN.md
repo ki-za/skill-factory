@@ -9,8 +9,13 @@
 - [x] Add three eval prompts and assertions covering repository work, unfamiliar-domain research, and missing-context interviewing.
 - [ ] Run quality evals if desired; install remains intentionally deferred.
 - [x] Update the repository validator for Claude Code frontmatter extensions.
-- [x] Run a blind-spot pass and goal alignment for the Omni knowledge and email workflows.
-- [x] Save separate handoffs for the `intake` skill, `omni-email-playbook` skill, and vault-local Omni playbook.
-- [ ] Design and create the general `intake` skill from `docs/handoff/intake-skill-goals-20260713.md`.
-- [ ] Design the Omni vault playbook from `docs/handoff/omni-playbook-vault-goals-20260713.md`.
-- [ ] Recreate `omni-email-playbook` from `docs/handoff/omni-email-playbook-goals-20260713.md`.
+
+## Omni knowledge loop
+
+- [x] Run a blind-spot pass and align the target architecture.
+- [x] Save separate handoffs for `intake`, `omni-email-playbook`, and the vault-local Omni playbook.
+- [x] Save the Herdr orchestration handoff at `docs/handoff/omni-parallel-build-20260713.md`.
+- [ ] Parallel foundation: build `intake`, establish the vault-local playbook corpus, and build `omni-email-playbook` in three isolated Herdr tabs.
+- [ ] Integration gate: validate both skills against the shared corpus contract and verify all vault writes were approved.
+- [ ] Observation: run several real intake and email cases, refine behavior, and add grounded evals.
+- [ ] Reassess whether mature vault knowledge justifies a small context skill.

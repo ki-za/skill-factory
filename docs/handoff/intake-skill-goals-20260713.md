@@ -24,7 +24,7 @@ Turn fleeting Markdown captures into durable understanding without making the ag
 The skill should take one open inbox item, help the user understand it, fill useful blind spots, and agree what it should become. Possible outcomes include:
 
 - durable company context;
-- a short teaching/resource note;
+- a teaching/resource note whose depth fits the subject;
 - a question or named blind spot;
 - a task and later its result;
 - an unresolved problem;
@@ -65,7 +65,9 @@ Rules already aligned:
 - Aim for inbox zero by repeatedly completing one item at a time.
 - Teach before asking the user to gather evidence.
 - Distinguish the capture's claims, agent inference, researched facts, colleague-only questions, and unresolved uncertainty.
-- Use external research when it materially improves understanding or direction; preserve a source trail in any resulting teaching resource.
+- Research when a useful blind spot appears; preserve a source trail in any resulting teaching resource.
+- Keep routine interaction terse, high-level, and atomic. Propose a teaching artifact only when it adds value; the artifact itself may be as deep as the subject requires.
+- Begin with gentle challenge and become more Socratic only when needed.
 - Propose a disposition and obtain confirmation before changing durable vault knowledge.
 - Preserve the user's meaning and voice; do not polish rough captures into generic prose.
 - Client-identifying details remain inside the vault. Any pattern promoted outside the private corpus must be anonymised and explicitly confirmed.
@@ -80,7 +82,7 @@ One intake item is complete only when:
 - assumptions, questions, and blind spots are visible;
 - a destination or deliberate deferral has been agreed;
 - the agreed disposition has been applied;
-- the inbox item's final state makes it clear that it is no longer awaiting normal processing, unless deliberately deferred.
+- the processed source capture has moved from `inbox/` to `archive/`; if the subject is deferred, its unresolved obligation survives first as a durable question, task, or unresolved-problem note.
 
 ## Memory model
 
@@ -104,16 +106,11 @@ A future context skill may extract stable company principles, constraints, or la
 
 ## Open decisions for the next session
 
-These were surfaced but not resolved:
-
-1. **File lifecycle.** Earlier discussion said never delete captures and mark them `filed`; the latest direction says mark them done and "remove [them] from the inbox" because they are fleeting. Decide whether completion means moving the file, retaining it in place with status, archiving it, or replacing it after its meaning is preserved elsewhere.
-2. **Frontmatter states.** Determine whether `open` and `filed` are enough, or whether explicit `deferred`/`blocked` states are needed.
-3. **Teaching artifact threshold.** Decide when processing produces a short teaching note versus teaching only in conversation.
-4. **Research threshold.** Define the practical trigger for external research without turning every capture into a research project.
-5. **Challenge style.** The desired balance between gentle clarification and active Socratic pressure must be learned through use.
-6. **Disposition vocabulary.** The earlier draft proposed fold, promote, park, task, ask, and drop. Re-evaluate these against the now-general skill rather than preserving them automatically.
-7. **Argument/config interface.** Decide how the generic skill learns the inbox path and vault-local rules.
-8. **Evaluation.** Create realistic tests for meaning preservation, useful teaching, uncertainty separation, one-item discipline, and confirmation before writes.
+1. **Minimal state machine.** Decide the exact frontmatter written before a completed capture moves to `archive/`, and how the durable replacement points back to its source when useful.
+2. **Disposition vocabulary.** Re-evaluate the earlier fold, promote, park, task, ask, and drop labels against the now-general skill rather than preserving them automatically.
+3. **Argument/config interface.** Decide how the generic skill learns the inbox path and vault-local rules.
+4. **Approval interaction.** Keep confirmation sufficient for safe writes without turning each item into a questionnaire.
+5. **Evaluation after observation.** Run several real items first, then create tests from observed failures in meaning preservation, useful teaching, uncertainty separation, one-item discipline, and write confirmation.
 
 ## Evidence and source anchors
 
@@ -132,4 +129,4 @@ These were surfaced but not resolved:
 
 ## First move next session
 
-Restate this handoff against the current vault rules, then align on the file lifecycle and minimal state machine. Those are the remaining blockers before naming the skill description, designing its steps, and writing eval cases.
+Restate this handoff against the current vault rules, then align on the minimal state machine, disposition vocabulary, and argument/config interface before naming the skill description and designing its steps. Defer eval design until several real runs expose actual failure modes.

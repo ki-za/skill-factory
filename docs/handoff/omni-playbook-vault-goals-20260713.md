@@ -103,6 +103,7 @@ The following is an orientation aid, not a confirmed folder taxonomy:
 ```text
 ~/notes/omni/playbook/
 ├── AGENTS.md
+├── clients/
 ├── routes/
 ├── patterns/
 ├── examples/
@@ -123,7 +124,7 @@ The intended local behavior is:
 - distinguish client-specific context from reusable general knowledge;
 - prefer anonymised reusable patterns when promoting beyond a client note;
 - preserve provenance and uncertainty;
-- ask before creating or changing playbook entries;
+- create or change playbook entries only after explicit approval in the current session;
 - avoid treating every drafted email as reusable knowledge;
 - use vault frontmatter, wikilinks, and human-readable note names;
 - keep the playbook useful to the human rather than optimising it solely for agents.
@@ -144,16 +145,15 @@ The local directory can be opened as an agent workspace. That does not make it a
 
 ## Open decisions for the next session
 
-1. **Flat versus foldered structure.** Test the provisional folders against the vault's preference for links and `parent:` relationships.
+1. **Flat versus foldered structure.** Keep `clients/`, but test the other provisional folders against the vault's preference for links and `parent:` relationships.
 2. **Playbook root note.** Decide whether a human-facing map/entry note is useful or would violate the vault's "no autonomous index notes" posture without explicit approval.
-3. **Local `AGENTS.md`.** Align exact read/write permissions and whether same-session explicit approval is sufficient for edits.
-4. **Client material boundary.** Decide what may live as client-specific notes, what requires sanitisation, and what should never enter `playbook/`.
-5. **Screenshots/assets.** Define storage, naming, sensitivity, and linking conventions.
-6. **Provenance.** Find the lightest way to retain source/confidence without imposing one large template on every atomic note.
-7. **Staleness.** Decide how uncertain, superseded, or review-needed knowledge is marked.
-8. **Routing.** Determine whether routes are notes, metadata, links, or a mix, and whether request type, response goal, or both drive retrieval.
-9. **Versioning.** Confirm whether ordinary vault Git history is sufficient; no separate repository is currently intended.
-10. **Initial migration.** Identify what, if anything, should be extracted from the existing `omni-work-context` and `omni-email-playbook` drafts into canonical vault notes.
+3. **Client material boundary.** Client-specific notes may live under `clients/`; decide what requires sanitisation before generalisation and what should never enter `playbook/`.
+4. **Screenshots/assets.** Define storage, naming, sensitivity, and linking conventions.
+5. **Provenance.** Find the lightest way to retain source/confidence without imposing one large template on every atomic note.
+6. **Staleness.** Decide how uncertain, superseded, or review-needed knowledge is marked.
+7. **Routing.** Determine whether routes are notes, metadata, links, or a mix, and whether request type, response goal, or both drive retrieval.
+8. **Versioning.** Confirm whether ordinary vault Git history is sufficient; no separate repository is currently intended.
+9. **Initial migration.** Identify what, if anything, should be extracted from the existing `omni-work-context` and `omni-email-playbook` drafts into canonical vault notes.
 
 ## Evidence and source anchors
 
