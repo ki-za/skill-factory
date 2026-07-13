@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-07-13
+
+- Added separate continuation handoffs for the general `intake` skill, the recreated `omni-email-playbook`, and the vault-local Omni playbook knowledge directory.
+- Recorded the aligned memory, skill-boundary, email-specification, research, and post-handoff knowledge-promotion decisions.
+
 ## 2026-07-12
 
 - Made the repository-facing guidance agent-agnostic while retaining Claude/Anthropic docs as high-quality reference material.
