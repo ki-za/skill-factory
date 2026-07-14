@@ -56,6 +56,7 @@ skill-factory/
     │   └── socratic-learning/
     ├── practices/
     │   ├── growing-outside-in-systems/
+    │   ├── intake/                     # process one inbox capture into an approved durable outcome
     │   ├── refactoring/
     │   ├── refinement-loop/
     │   └── small-steps/                # draft, no SKILL.md yet
