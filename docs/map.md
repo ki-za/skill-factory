@@ -35,6 +35,7 @@ skill-factory/
 │   │       ├── eval-viewer/            # HTML eval viewer and report generator
 │   │       ├── references/             # JSON schemas for evals, grading, benchmarks
 │   │       └── assets/                 # HTML templates for trigger eval review
+│   ├── handoff/                        # Resumable task contracts and orchestration handoffs
 │   ├── create_new_skill-process.md     # Instructions for creating skills
 │   ├── create_evals-process.md        # Instructions for evaluating skills
 │   ├── map.md                          # This file - repository structure
@@ -61,6 +62,7 @@ skill-factory/
     ├── ai/
     │   ├── ai-patterns/
     │   ├── creating-process-files/
+    │   ├── omni-email-playbook/        # Plans Omni emails as specifications for email-voice
     │   └── claude-code/                # subfolder for Claude Code-specific skills
     │       ├── creating-hooks/
     │       ├── launching-agent-teams/
