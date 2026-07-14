@@ -62,6 +62,7 @@ skill-factory/
     ├── ai/
     │   ├── ai-patterns/
     │   ├── creating-process-files/
+    │   ├── omni-email-playbook/        # Plans Omni emails as specifications for email-voice
     │   └── claude-code/                # subfolder for Claude Code-specific skills
     │       ├── creating-hooks/
     │       ├── launching-agent-teams/
